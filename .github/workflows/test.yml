@@ -108,7 +108,7 @@ jobs:
           pip --version
           pip list
           tree .
-          cloc gchar
+          cloc fake_html
           cloc test
       - name: Crawl for dataset
         shell: bash

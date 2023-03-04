@@ -8,7 +8,7 @@ jobs:
   release:
     name: Publish to official pypi
     runs-on: ${{ matrix.os }}
-    if: ${{ github.repository == 'narugo1992/gchar' }}
+    if: ${{ github.repository == 'hansbug/fake_html' }}
     strategy:
       matrix:
         os:
