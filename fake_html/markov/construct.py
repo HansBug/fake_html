@@ -53,7 +53,7 @@ def _is_float(v):
 
 
 class DataCollector:
-    def __init__(self, lparent: int = 2, lprev: int = 4):
+    def __init__(self, lparent: int = 3, lprev: int = 5):
         self.lparent = lparent
         self.lprev = lprev
         self._tags_chain = {}
