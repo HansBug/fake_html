@@ -1,4 +1,5 @@
 import enum
+import math
 import random
 from typing import Mapping, Tuple, Sequence, Any
 
@@ -74,20 +75,27 @@ class HTMLMarkov:
         return tail_tuple(feat, self.__lprev)
 
     @seedable_func
-    def fake_html(self, start_path: Tuple[str, ...] = (), indent: bool = True):
+    def fake_html(self, start_path: Tuple[str, ...] = (), indent: bool = True, scale: float = 0.4):
+        if not 0.01 < scale < 0.99:
+            raise ValueError(f'Invalid scale, (0.01, 0.99) expected but {scale!r} found.')
+
         doc, tag, text = Doc().tagtext()
-        self._random_html(start_path, (doc, tag, text))
+        self._random_html(start_path, (doc, tag, text), scale)
 
         source = doc.getvalue()
         if indent:
             source = _html_indent(source)
         return source
 
-    def _random_html(self, path: Tuple[str, ...], deco: Tuple[Any, Any, Any]):
+    def _random_html(self, path: Tuple[str, ...], deco: Tuple[Any, Any, Any], scale: float = 0.5):
         doc, tag, text = deco
         p_feat = self._parent_feature(path)
         mean, std = self._tags_count[p_feat]
-        cnt = int(max(round(norm(mean, std).rvs()), 0))
+        cnt = norm(mean, std).ppf(scale + (random.random() - 0.5) / 50)
+        if math.isnan(cnt):
+            cnt = int(mean)
+        else:
+            cnt = int(max(round(cnt), 0))
 
         prevs = []
         for i in range(int(cnt * 1.2)):
@@ -95,7 +103,7 @@ class HTMLMarkov:
             tags, prob = self._tags_chain[feature]
             new_tag = np.random.choice(tags, p=prob)
             if new_tag is EOE:
-                if i < cnt * 0.6:
+                if i < cnt * 0.7:
                     prevs.clear()
                 else:
                     break
@@ -138,7 +146,7 @@ class HTMLMarkov:
                         doc.stag(new_tag, *attrs.items())
                     else:
                         with tag(new_tag, *attrs.items()):
-                            self._random_html((*path, new_tag), deco)
+                            self._random_html((*path, new_tag), deco, scale)
                 prevs.append(new_tag)
 
     @classmethod

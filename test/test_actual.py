@@ -14,4 +14,4 @@ class TestActualUse:
 
     @pytest.mark.parametrize(['seed'], [(i,) for i in range(10, 31, 10)])
     def test_fake_html(self, seed):
-        assert fake_html(seed) == fake_html(seed)
+        assert fake_html(seed=seed) == fake_html(seed=seed)
