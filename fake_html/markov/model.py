@@ -74,7 +74,7 @@ class HTMLMarkov:
         return tail_tuple(feat, self.__lprev)
 
     @seedable_func
-    def random_html(self, start_path: Tuple[str, ...] = (), indent: bool = True):
+    def fake_html(self, start_path: Tuple[str, ...] = (), indent: bool = True):
         doc, tag, text = Doc().tagtext()
         self._random_html(start_path, (doc, tag, text))
 
